@@ -39,7 +39,10 @@ public class Utils {
     }
 
 
-    public static HashMap<String, Integer> getSumMap(List<Score> scores) throws Exception{
+    public static HashMap<String, Integer> getSumMap() throws Exception{
+
+
+        List<Score> scores = ReadUtil.readData("F:\\BigData\\IDEA\\bigdataclass\\src\\Day7_9\\data\\score.txt", Score.class);
 
         //创建hashmap对象存放数据
         HashMap<String, Integer> summap = new HashMap<>();

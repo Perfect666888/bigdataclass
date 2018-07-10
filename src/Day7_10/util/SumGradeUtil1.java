@@ -19,10 +19,9 @@ public class SumGradeUtil1 {
 
     public static void getsummap() throws Exception {
 
-        List<Score> scores = ReadUtil.readData("F:\\BigData\\IDEA\\bigdataclass\\src\\Day7_9\\data\\score.txt", Score.class);
 
         //调用方法获得总分map
-        HashMap<String, Integer> summap = Utils.getSumMap(scores);
+        HashMap<String, Integer> summap = Utils.getSumMap();
 
         //在这基础上再去关联学生表
         List<Student> students = ReadUtil.readData("F:\\BigData\\IDEA\\bigdataclass\\src\\Day7_10\\data\\students.txt", Student.class);

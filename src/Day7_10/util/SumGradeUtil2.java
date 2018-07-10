@@ -1,7 +1,7 @@
 
 package Day7_10.util;
 
-import Day7_10.bean.Score;
+
 import Day7_10.bean.Student;
 import Day7_10.compare.sumSort;
 
@@ -14,10 +14,9 @@ public class SumGradeUtil2 {
 //    需要有学号，姓名，总分，名次。文件名称使用对应科目名称（使用hashmap,arraylist,collections）
     public static void getSumByClass() throws Exception {
 
-        List<Score> scores = ReadUtil.readData("F:\\BigData\\IDEA\\bigdataclass\\src\\Day7_9\\data\\score.txt", Score.class);
 
         //调用方法获得总分map
-        HashMap<String, Integer> summap = Utils.getSumMap(scores);
+        HashMap<String, Integer> summap = Utils.getSumMap();
 
         //在这基础上再去关联学生表
         List<Student> students = ReadUtil.readData("F:\\BigData\\IDEA\\bigdataclass\\src\\Day7_10\\data\\students.txt", Student.class);
