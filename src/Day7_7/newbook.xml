@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<books>
+  <book name="三国演义" author="罗贯中">
+    <name>三国演义</name>
+    <author>罗贯中</author>
+  </book>
+</books>
