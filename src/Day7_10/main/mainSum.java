@@ -1,4 +1,4 @@
-package Day7_10.read;
+package Day7_10.main;
 
 
 import Day7_10.util.SumGradeUtil1;
