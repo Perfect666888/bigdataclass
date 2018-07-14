@@ -1,4 +1,4 @@
-#查询年级排名前十学生各科的分数 [学号,学生姓名，学生班级，科目名，分数]
+#----------------------------------------------查询年级排名前十学生各科的分数 [学号,学生姓名，学生班级，科目名，分数]
 #1.求出学生总分选出前10
 select a.id from student as a join score as b on a.id =b.studentId
 group by a.id order by sum(b.score) desc limit 10;
@@ -35,7 +35,7 @@ join cource as C on B.courceId =C.id;
 
 
 
-#查询总分大于班级平均分的学生文理科分开 [学号，姓名，班级，总分]
+#-----------------------查询总分大于班级平均分的学生文理科分开 [学号，姓名，班级，总分]
 #1.获得学生总分,和对应的班级
 select bb.studentId,aa.clazz,sum(score) as xszf
 from score as bb
@@ -121,7 +121,7 @@ join (select A.studentId,A.xszf,B.bjpjf
  where AA.clazz like '理科%' order by AA.clazz,BB.xszf desc;
 
 
-#查询每科都及格的学生 [学号，姓名，班级，科目，分数]
+#-----------------------查询每科都及格的学生 [学号，姓名，班级，科目，分数]
 #1.取出每门科目的及格分数
 select id,name,score*0.6 as jgx from cource;
 
@@ -140,7 +140,7 @@ select A.studentId
 from (select studentId,count(studentId) as jgms
       from score as b
       join (select id,name,score*0.6 as jgx from cource) as c on b.courceId =c.id
-      where b.score>c.jgx group by studentId) as A
+      where b.score>=c.jgx group by studentId) as A
 join (select studentId,count(studentId) as ksms
       from score group by studentId)as B
 on A.studentId =B.studentId
@@ -155,14 +155,14 @@ join (select A.studentId
       from (select studentId,count(studentId) as jgms
             from score as b
             join (select id,name,score*0.6 as jgx from cource) as c on b.courceId =c.id
-            where b.score>c.jgx group by studentId) as A
+            where b.score>=c.jgx group by studentId) as A
       join (select studentId,count(studentId) as ksms
             from score group by studentId)as B
       on A.studentId =B.studentId
       where A.jgms =B.ksms) as DD on DD.studentId =AA.id
 ;
 
-#查询偏最严重的前100名学生  [学号，姓名，班级，科目，分数]
+#-----------------------查询偏最严重的前100名学生  [学号，姓名，班级，科目，分数]
 #1.求出每个学生的平均分
 select studentId,avg(score) as pjf
 from score group by studentId;
@@ -175,7 +175,7 @@ join (select studentId,avg(score) as pjf
  group by b.studentId;
 
 #3.取出结果的前100
-select b.studentId,sum(abs(b.score-c.pjf)) as czh
+select b.studentId, sqrt(power(sum(abs(b.score-c.pjf)),2)) as czh
 from score as b
 join (select studentId,avg(score) as pjf
       from score group by studentId) as c on b.studentId=c.studentId
@@ -186,7 +186,7 @@ select A.id,A.name,A.clazz,C.name,B.score
 from student as A
 join score as B on A.id =B.studentId
 join cource as C on B.courceId =C.id
-join (select b.studentId,sum(abs(b.score-c.pjf)) as czh
+join (select b.studentId,sqrt(power(sum(abs(b.score-c.pjf)),2)) as czh
       from score as b
       join (select studentId,avg(score) as pjf
             from score group by studentId) as c on b.studentId=c.studentId
@@ -194,11 +194,46 @@ join (select b.studentId,sum(abs(b.score-c.pjf)) as czh
 ;
 
 
+#-----------------------查询总分大于学科(文理科)平均分的学生文理科分开 [学号，姓名，班级，总分]
+#1.查询每个学生的平均分
+select a.id,a.clazz,avg(b.score) as xspjf
+from student as a
+join score as b on a.id =b.studentId
+group by a.id;
 
+#2.查询文理科的平均分
+select substring(a.clazz,1,2) as type,avg(b.score) as xkpjf
+from student as a
+join score as b on a.id =b.studentId
+group by type;
 
+#3.选出平均分高于学科的id
+select A.id
+from(select a.id,a.clazz,avg(b.score) as xspjf
+     from student as a
+     join score as b on a.id =b.studentId
+     group by a.id)as A
+join (select substring(a.clazz,1,2) as type,avg(b.score) as xkpjf
+      from student as a
+      join score as b on a.id =b.studentId
+      group by type)as B on substring(A.clazz,1,2)=B.type
+where A.xspjf>B.xkpjf;
 
-
-
+#4.选出结果[学号，姓名，班级，总分]
+select AA.id,AA.name,AA.clazz,sum(BB.score)
+from student as AA
+join score as BB on AA.id =BB.studentId
+join (select A.id
+      from(select a.id,a.clazz,avg(b.score) as xspjf
+           from student as a
+           join score as b on a.id =b.studentId
+           group by a.id)as A
+      join (select substring(a.clazz,1,2) as type,avg(b.score) as xkpjf
+            from student as a
+            join score as b on a.id =b.studentId
+            group by type)as B on substring(A.clazz,1,2)=B.type
+      where A.xspjf>B.xkpjf) as CC on AA.id=CC.id
+ group by AA.id;
 
 
 
