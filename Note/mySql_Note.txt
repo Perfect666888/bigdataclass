@@ -129,7 +129,6 @@ Mysql与java连接
         //创建sql执行器
         Statement statement = connection.createStatement();
 
-
         //编写sql语句
         String sql = "select * from student where name='"+stuname+"'";
 
@@ -149,6 +148,21 @@ Mysql与java连接
 		//获得有多少列
 		int columnCount = resultSet.getMetaData().getColumnCount();
 
+
+预执行sql
+能避免sql注入
+        //创建sql语句
+        String sql = "select * from user where password=? and name=?";
+
+        //获取连接
+         Connection connection = DBUtils.getConnection();
+
+        //创建预编译sql执行器
+        PreparedStatement preparestatement= connection.prepareStatement(sql);
+
+        //给参数赋值
+        preparestatement.setObject(1,password);
+        preparestatement.setObject(2,username);
 
 
 
