@@ -195,45 +195,33 @@ join (select b.studentId,sqrt(power(sum(abs(b.score-c.pjf)),2)) as czh
 
 
 #-----------------------查询总分大于学科(文理科)平均分的学生文理科分开 [学号，姓名，班级，总分]
-#1.查询每个学生的平均分
-select a.id,a.clazz,avg(b.score) as xspjf
-from student as a
-join score as b on a.id =b.studentId
-group by a.id;
+#1.求出每个学生的总分
+select studentId,a.name,a.clazz,sum(score) as xszf
+from score as b
+join student as a on a.id =b.studentId
+group by studentId;
 
-#2.查询文理科的平均分
-select substring(a.clazz,1,2) as type,avg(b.score) as xkpjf
-from student as a
-join score as b on a.id =b.studentId
-group by type;
+#2.求出文理科总分平均分
+select substring(b.clazz,1,2) as lb,avg(b.xszf) as kmpjf
+from (select studentId,a.clazz,sum(score) as xszf
+      from score as b
+      join student as a on a.id =b.studentId
+      group by studentId)as b
+group by lb
 
-#3.选出平均分高于学科的id
-select A.id
-from(select a.id,a.clazz,avg(b.score) as xspjf
-     from student as a
-     join score as b on a.id =b.studentId
-     group by a.id)as A
-join (select substring(a.clazz,1,2) as type,avg(b.score) as xkpjf
-      from student as a
-      join score as b on a.id =b.studentId
-      group by type)as B on substring(A.clazz,1,2)=B.type
-where A.xspjf>B.xkpjf;
-
-#4.选出结果[学号，姓名，班级，总分]
-select AA.id,AA.name,AA.clazz,sum(BB.score)
-from student as AA
-join score as BB on AA.id =BB.studentId
-join (select A.id
-      from(select a.id,a.clazz,avg(b.score) as xspjf
-           from student as a
-           join score as b on a.id =b.studentId
-           group by a.id)as A
-      join (select substring(a.clazz,1,2) as type,avg(b.score) as xkpjf
-            from student as a
-            join score as b on a.id =b.studentId
-            group by type)as B on substring(A.clazz,1,2)=B.type
-      where A.xspjf>B.xkpjf) as CC on AA.id=CC.id
- group by AA.id;
+#3.求出大于平均分的学生
+select a.*,b.kmpjf
+from(select studentId,a.name,a.clazz,sum(score) as xszf
+     from score as b
+     join student as a on a.id =b.studentId
+     group by studentId) as a
+join (select substring(b.clazz,1,2) as lb,avg(b.xszf) as kmpjf
+      from (select studentId,a.clazz,sum(score) as xszf
+            from score as b
+            join student as a on a.id =b.studentId
+            group by studentId)as b
+      group by lb)as b on substring(a.clazz,1,2)=b.lb
+where a.xszf>b.kmpjf
 
 
 
