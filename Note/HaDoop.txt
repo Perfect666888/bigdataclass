@@ -1,0 +1,278 @@
+克隆虚拟机之后，需要重新生成mac地址和更改ip地址，主机名
+
+
+
+主机名:
+  vi /etc/sysconfig/network 修改hostname为newname
+
+mac地址，自动重新生成
+
+  1.删除 /etc/udev/rules.d/70-persistent-net.rules
+  2.删除 /etc/sysconfig/network-scripts/ifcfg-eth0
+	中HWADDR一行
+	和更改IPADDR
+
+
+
+免密ssh链接
+ 在主机端
+	ssh-keygen -t rsa 回车到结束
+	ssh-copy-id 服务器ip地址
+
+
+sftp  -上传下载文件
+ CRT   后按alit+p
+
+      pwd   :服务器目录
+      lpwd  :客户端目录
+linux命令+ l都是客户端
+
+     put 文件名   :上传
+     get 文件名   :下载     全都为当前目录
+
+
+lrzsz   linux中代替sftp
+安装
+	yum -y install lrzsz	
+
+
+上传    拖拽
+下来     rz  会打开图形界面，默认会在下载文件夹
+
+查找
+grep 
+find
+
+在数据库中合成照
+locate	注：每天自动更新一次，建议每次使用前updatedb下
+whereis	 
+
+which  判断环境(path)变量的路径
+
+
+
+
+su、sudo
+su 切换用户，之前用户仍然处于登陆状态
+	su - 直接切换到root的根目录
+
+
+sudo 切换到root权限执行后续命令
+     输入普通用户密码即可，需要配置权限  
+	必须使用visudo编辑 /etc/sudoers
+
+
+挂载(mount)
+   mount  -o 挂载方式 原路径 新路径
+   umount 原路径            取消挂载
+   
+
+root权限下， 输入setup   跳出交互式页面设置网络
+
+netstat -nlpt        查看当前正在网络监听
+
+crontab    定时器  
+serice crond status  查看运行状态
+
+crontab -l [用户名]   列出当前用户的crontab
+crontab -e [用户名]	  编辑当前用户的crontab
+
+
+shell脚本  一般是.sh结尾(用什么语言写就用什么后缀)，但不影响执行
+格式
+	#!/bin/bash   #用的什么解释器
+	echo "hello world!"      #打印文本 
+	
+编辑完成后需要编辑权限  chmod
+需要写入绝对路径执行文本
+定义变量，中间不能有空格
+需要使用变量，需要加$ 
+一般格式为${变量名}  
+readonly 变量名		只读变量
+unset 变量名		删除非只读变量
+局部变量
+	只在一个窗口有效
+
+$1  传递第几个参数	
+
+参数处理	说明
+$#	传递到脚本的参数个数
+$*	以一个单字符串显示所有向脚本传递的参数。 
+	如"$*"用「"」括起来的情况、以"$1 $2 … $n"的形式输出所有参数。
+$$	脚本运行的当前进程ID号
+$!	后台运行的最后一个进程的ID号
+$@	与$*相同，但是使用时加引号，并在引号中返回每个参数。
+	如"$@"用「"」括起来的情况、以"$1" "$2" … "$n" 的形式输出所有参数。
+$-	显示Shell使用的当前选项，与set命令功能相同。
+$?	显示最后命令的退出状态。0表示没有错误，其他任何值表明有错误。
+
+运算符
+	`expr 数字1 运算符 数字2` 
+		需要用空格隔开
+	((运算表达式))
+	$[运算表达式]
+	
+	* 必须加\
+
+关系运算符	
+-eq	检测两个数是否		相等	，相等返回 true。					[ $a -eq $b ] 返回 true。
+-ne	检测两个数是否 		不相等	，返回 true。				[ $a -ne $b ] 返回 true。
+-gt	检测左边的数是否 	大于	右边的，如果是，则返回 true。	[ $a -gt $b ] 返回 false。
+-lt	检测左边的数是否	小于	右边的，如果是，则返回 true。	[ $a -lt $b ] 返回 true。
+-ge	检测左边的数是否	大于等于	右边的，如果是，则返回 true。	[ $a -ge $b ] 返回 false。
+-le	检测左边的数是否	小于等于	右边的，如果是，则返回 true。	[ $a -le $b ] 返回 true。	
+	
+布尔运算符
+!	非	运算，表达式为 true 则返回 false，否则返回 true。	[ ! false ] 返回 true。
+-o	或	运算，有一个表达式为 true 则返回 true。	[ $a -lt 20 -o $b -gt 100 ] 返回 true。
+-a	与	运算，两个表达式都为 true 才返回 true。	[ $a -lt 20 -a $b -gt 100 ] 返回 false。
+
+
+判断表达式
+if  写成单行时需要用;隔开
+	if 条件;then 运行表达式;fi
+
+
+	if	条件
+	then
+		运行表达式
+	fi
+
+	if	条件
+	then
+		运行表达式
+	else
+		运行表达式2
+	fi
+	
+	
+	if	条件
+	then
+		运行表达式
+	elif 条件2
+	then
+		运行表达式2
+	else
+		运行表达式3
+	fi
+
+
+for  
+	写成单行时需要用;隔开
+	for ((条件));do;运行表达式;done
+	
+	for ((条件))
+	do
+		运行表达式
+	done
+
+while
+	while ((条件))
+	do
+		运行表达式
+	done
+可用let  自加自减操作
+
+case     in
+	模式1) 表达式
+	;;
+	模式2) 表达式
+	;;
+esac
+
+read 			键盘录入 
+
+函数
+默认最后一行代码为return结果
+调用函数才生效
+调用函数后 使用$? 查看返回值
+
+
+集群
+zookeeper    分布式文件存储系统
+	特性
+		全局数据一致
+		可靠性
+		顺序性
+		数据更新原子性 (半数以上即为成功)
+		实时性
+
+leader和follower
+	较大集群会有一个Observer(非事务请求，不参与投票)
+		
+		
+一般为奇数台
+
+jps 查看zookeeper有没有启动成功
+zkCli.sh -server ip  		进入命令行工具
+				可以为主机名
+		
+create  [-s] [-e] 路径 数据	权限控制
+		序列化  临时节点
+		
+查询
+get 路径 	获取节点数据和属性信息
+ls	路径	获得节点个数信息
+ls2 路径	节点属性信息
+		
+更新
+set 路径 数据 [数据版本最大为3]
+
+删除
+delete 路径 [数据版本] 有子节点不可删除
+Rmr 路径	递归删除节点
+		
+
+quota 限制	(非强制性限制)
+setquota -n|-b val path
+	-n 设置子节点的配额数量
+	-b 设置节点内容的长度
+	
+查询配额
+listquota path
+	-1 表示无限, 即没有限制
+
+删除配额
+	delquota [-n|-b] path
+	
+history		查看历史命令
+redo 历史命令编号   再次执行该命令
+
+
+监听机制
+get 路径 watch  设置节点监听 (一次性)
+
+
+
+
+
+
+
+		
+		
+RPC 	远程调用协议
+	特质
+		协议
+		网络协议和网络IO模型对其透明
+		信息格式对其透明
+		跨语言能力
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

@@ -1,0 +1,168 @@
+Mysql
+
+登陆到服务器
+mysql -u userName -p password
+
+\c 退出
+
+库的操作
+create database 库名;	创建库
+show databases;			查看数据库
+use 库名;				使用库
+drop 库名;				删除库
+
+表
+create table 表名
+(
+    列名 数据类型,
+	列名 数据类型
+)default charset=默认编码;
+
+desc 表名;								查看表结构
+rename table 原表名 to 新表名;			修改表名
+alter table 表名 character set 字符集;	修改表的字符集
+
+导入数据到表
+load data local infile 路径 
+	into table 表名 fields terminated by '切割标识';
+
+列声明
+	列名 属性
+ 
+列
+alter table 表名 add 列省明;    		增加列
+							after 列名	在该列后添加
+							first		第一列
+alter table 表名 add (列声明1,列声明2);	增加多列
+alter table 表名 modity 列声;			修改列
+alter table 表名 drop 列名;				删除列
+alter table 表名 change 原列名	列声明;	修改列名
+
+数据操作
+增加
+insert into 表名 [(列名1,列名2)]
+values
+(值1,值2),(值1,值2);
+
+primary key	主键
+foreign key(列名) references 表名(列名)	外键
+auto_increment	自动增长
+unique	唯一
+comment '描述'	
+
+
+删
+delete from 表名 [where 条件]; 	不加条件为清空数据
+truncat 表名					清空数据
+
+改
+update 表名 set
+列名=值
+where 条件;
+
+查
+select * from 表名	基本结构
+select 字段名,字段名 from 表名
+
+列名 as 别名			取别名 	
+concat(列名,'字符串')	连接字符
+distinct 字段名		去除相同的该字段内容
+
+条件判断
+where
+and
+or
+not
+is null
+in	
+	列名 in (值1,值2)	任意一个即可
+betweeen 
+	列名 betweeen 值1 and 值2 	在这两个值之间的都可以 (包括这2个值)
+模糊查询
+	like 
+通配符
+	%:任意个字符
+	_:单个字符
+regexp 通配符
+	^指定字符	指定字符开头
+	指定字符$	指定字符结尾
+
+函数
+sum(列名)	求和
+count(列名)	统计
+avg(列名)	求平均
+max(列名)	最大
+min(列名)	最小
+
+group by 列名	按照指定列名分组
+having	条件	对于查询结果进行操作(筛选)
+order by 列名	按照指定列名排序,可以多个
+				默认升序	asc
+				降序		desc
+limit [offset],n	取出多少条,默认offset为0
+
+union 合并查询结果
+	查询1 union 查询2
+	要求: 查询结果的列数相同(推荐参数类型也相同)
+	可以来自多张表,列名可以不一致,结果以第一个查询的列名为准，
+	结果会去重复
+union all 结果不去重复
+	(查询1) union all (查询2)
+	
+连接 join
+	基本格式
+	表1 join 表2 on 表1.列名=表2.列名
+left join  	左连接	结果以左表为主，无匹配用null补齐
+right join	右连接	结果以右表为主，无匹配用null补齐
+inner join	内连接	左右连接的交集
+	
+Mysql与java连接
+需要使用JDBC包
+格式	
+        //加载驱动
+        Class.forName("com.mysql.jdbc.Driver");
+
+        //建立连接
+
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/test_db", "root", "123");
+
+        //创建sql执行器
+        Statement statement = connection.createStatement();
+
+
+        //编写sql语句
+        String sql = "select * from student where name='"+stuname+"'";
+
+        //执行sql，返回查询结果 查询
+        ResultSet resultSet = statement.executeQuery(sql);
+		
+		
+		//update,delete,insert时使用
+		int i = statement.executeUpdate(sql);
+
+            if(i>0){
+                System.out.println("更新成功---");
+            }
+		
+
+
+		//获得有多少列
+		int columnCount = resultSet.getMetaData().getColumnCount();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

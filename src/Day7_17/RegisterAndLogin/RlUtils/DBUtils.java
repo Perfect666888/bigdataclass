@@ -1,4 +1,4 @@
-package Day7_16.RegisterAndLogin.RlUtils;
+package Day7_17.RegisterAndLogin.RlUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -104,7 +104,6 @@ public class DBUtils {
             e.printStackTrace();
         }
     }
-
     public static void closeAll(Connection connection, PreparedStatement preparedStatement) {
         try {
             if (connection != null) {
